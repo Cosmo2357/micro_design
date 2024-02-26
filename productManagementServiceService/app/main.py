@@ -34,7 +34,16 @@ async def read_api():
         {"name": "Jane1", "age": 25},
         {"name": "Doe2", "age": 35}
     ]) 
-    return {"data from pinot":  """ collection.find_one() """} 
+
+    response = []
+    documents = collection.find()
+    for document in documents:
+        document['_id'] = str(document['_id'])  
+        response.append(document)
+    return {"data from mongo":  response}
+
+
+    # return {"data from pinot":  ''} 
 
 @app.get("/test", description="This is the root endpoint", tags=["root"])
 async def root():
