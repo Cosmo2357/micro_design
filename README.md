@@ -1,3 +1,6 @@
+### 
+多分userServiceでPostgresにユーザー情報、productServiceでmongoDBに商品情報、redpandaでpinotに商品情報のデータを入れてfeedServiceで取得して表示する。
+
 https://redpanda.com/
 
 https://redpanda.com/blog/streaming-data-apache-pinot-kafka-connect-redpanda

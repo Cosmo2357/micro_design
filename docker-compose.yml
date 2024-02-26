@@ -16,5 +16,17 @@ services:
     ports:
       - 29092:29092
 
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: example  
+      POSTGRES_USER: exampleuser 
+      POSTGRES_DB: exampledb 
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"  
+
 volumes:
   mongodb_data:

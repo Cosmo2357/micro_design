@@ -5,10 +5,13 @@ from fastapi import  FastAPI, APIRouter, APIRouter, HTTPException
 from starlette.config import Config
 from pinotdb import connect
 from pymongo import MongoClient
-
+from pydantic import BaseModel
 
 # conn = connect(host='localhost', port=8000, path='/query/sql', scheme='http')
 # curs = conn.cursor()
+class Item(BaseModel):  
+    name: str
+    age: int
 
 app = FastAPI()
 # api.py
@@ -56,7 +59,7 @@ async def root():
     return {"result": 'ss'}  # This is the response
 
 
-@app.get("/example")
+@app.get("/example/{id}")
 async def get(id: int):
     if id == 1:
         raise HTTPException(status_code=404, detail="Item not found")
@@ -64,8 +67,13 @@ async def get(id: int):
 
 
 @app.post("/hello",  tags=["group1"])
-async def post():
-    return {"message": "Hello World"}  # This is the response
+async def post(item: Item):
+    
+    db = client['example_db']
+    collection = db['example_collection']
+    collection.insert_one({"name": item.name, "age": item.age})
+    
+    return {"message": 'aaa'}  # This is the response
 
 
 @app.delete("/test/hello")
