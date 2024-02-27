@@ -6,6 +6,11 @@ from starlette.config import Config
 from pinotdb import connect
 from pymongo import MongoClient
 from pydantic import BaseModel
+from kafka import KafkaConsumer
+from kafka import TopicPartition
+import json
+from kafka import KafkaProducer
+from kafka.errors import KafkaError
 
 # conn = connect(host='localhost', port=8000, path='/query/sql', scheme='http')
 # curs = conn.cursor()
@@ -16,39 +21,36 @@ class Item(BaseModel):
 app = FastAPI()
 # api.py
 
+
+
 # app.include_router(api_router)
 # app.include_router(tasks_router)
 
 # omg.sayhello()
 
-client = MongoClient('mongodb://127.0.0.1:27017')
 
-router = APIRouter()
-# 呼び出し
+
+
+
 @app.get("/")
 async def read_api():
+    print("Hello, world!")
+    producer = KafkaProducer(bootstrap_servers='localhost:29092')
+    topic_name = 'test-topic'
 
-    db = client['example_db']
-    collection = db['example_collection']
-    
-    collection.insert_one({"name": "yuhki", "age": 200})
+    # メッセージを送信
+    producer.send(topic_name, b'Hello, This is a message from producer!')
+    producer.send(topic_name, b'Hello, This is a second message from producer123!')
+    producer.flush()  # すべての非同期メッセージが送信されるまで待機
 
-    collection.insert_many([
-        {"name": "Jane1", "age": 25},
-        {"name": "Doe2", "age": 35}
-    ]) 
-
-    response = []
-    documents = collection.find()
-    for document in documents:
-        document['_id'] = str(document['_id'])  
-        response.append(document)
-    return {"data from mongo":  response}
+    print('Message sent to topic:', topic_name)
 
 
-    # return {"data from pinot":  ''} 
 
-@app.get("/test", description="This is the root endpoint", tags=["root"])
+
+    return {"data from kafka":  'producer'} 
+
+@app.get("/test", description="This is the root endpoint日本語", tags=["root"])
 async def root():
     db = client['example_db']
     collection = db['example_collection']
