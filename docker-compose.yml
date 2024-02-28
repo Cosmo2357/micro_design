@@ -4,6 +4,11 @@ services:
     image: mongo:latest
     ports:
       - "27017:27017"
+    tty: true
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=myuser
+      - MONGO_INITDB_ROOT_PASSWORD=mypassword
     volumes:
       - mongodb_data:/data/db
 
@@ -23,16 +28,19 @@ services:
       - "29092:29092"
 
   postgres:
-    image: postgres
-    restart: always
+    image: postgis/postgis:latest
+    platform: linux/amd64
+    container_name: py_postgres
     environment:
-      POSTGRES_PASSWORD: example  
-      POSTGRES_USER: exampleuser 
-      POSTGRES_DB: exampledb 
-    volumes:
-      - ./data/db:/var/lib/postgresql/data
+      POSTGRES_USER: my_user
+      POSTGRES_PASSWORD: my_password
+      POSTGRES_DB: my_database
     ports:
-      - "5432:5432"  
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
 volumes:
+  postgres_data:
   mongodb_data:
+
